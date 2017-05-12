@@ -1,21 +1,52 @@
+// vim: noai:ts=4:sw=4
+/*
+
+Write a function invert(x,p,n) that returns x with the n bits that begin at
+position p inverted (i.e., 1 changed into 0 and vice versa), leaving the
+others unchanged.
+
+*/
+
 #include <stdio.h>
+#include <limits.h>
 
-unsigned invert (unsigned x, int p, int n)
+void print_bits(unsigned int x);
+unsigned invert(unsigned x, int p, int n);
+void test_invert(unsigned x, int p, int n);
 
+void print_bits(unsigned int x)
 {
-	return x ^ (~(~0 << n) << (p + 1 - n));
+    char s[] = "00000000000000000000000000000000";
+    for (int i = 0; i < 32; i++) {
+        if ((x & 1) != 0)
+            s[31 - i] = '1';
+        else
+            s[31 - i] = '0';
+        x = x >> 1;
+    }
+    printf("%s", s);
 }
 
-int main ()
-
+unsigned int invert(unsigned int x, int p, int n)
 {
-	unsigned	x;
-	int		p, n;
+    unsigned int u = ~((unsigned) ~0 << n);
 
-	x = 0xaa;
-	p = 5;
-	n = 4;
-	printf("invert(0x%x, %d, %d) = 0x%x\n", x, p, n, invert(x, p, n));
+    unsigned int u1 = u << (p - n + 1);
 
-	return 0;
+    return x ^ u1;
+}
+
+void test_invert(unsigned int x, int p, int n)
+{
+    printf("invert(");
+    print_bits(x);
+    printf(", %d, %d) = ", p, n);
+    print_bits(invert(x, p, n));
+    printf("\n");
+}
+
+int main()
+{
+    test_invert(0, 5, 3);
+    test_invert(UINT_MAX - 16, 5, 3);
 }

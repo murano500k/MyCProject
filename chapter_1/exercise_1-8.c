@@ -1,24 +1,18 @@
 #include <stdio.h>
 
-main ()
-
+int main()
 {
-	int	c, nb, nt, nl; 
+    int s, t, n;
+    s = t = n = 0;
 
-	nb = nt = nl = 0;
-	while ((c = getchar()) != EOF)
-
-		if (c == ' ')
-
-			nb++;
-
-		else if (c == '\t')
-
-			nt++;
-
-		else if (c == '\n')
-
-			nl++;
-
-	printf("Blanks = %d, tabs = %d, newlines = %d.\n", nb, nt, nl);
+    int c;
+    while ((c = getchar()) != EOF) {
+        if (c == ' ')
+            s++;
+        else if (c == '\t')
+            t++;
+        else if (c == '\n')
+            n++;
+    }
+    printf("spaces: %d, tabs: %d, newlines: %d\n", s, t, n);
 }

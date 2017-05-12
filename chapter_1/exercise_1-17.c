@@ -1,43 +1,30 @@
 #include <stdio.h>
 
-#define MAXLINE		1000
-#define DISPLAY_LENGTH	80
+#define MAXLINE  80
 
-int 	mygetline (char line[], int limit);
+int get_line(char s[], int lim);
+int get_line_old(char s[], int lim);
+void copy(char from[], char to[]);
 
-int main ()
-
+int main()
 {
-	int	len;
-	char	line[MAXLINE];
+    int len = 0;
+    char line[MAXLINE + 2];
 
-	while ((len = mygetline(line, MAXLINE)) > 0)
+    for (int i = 0; i < MAXLINE + 2; i++)
+        line[i] = 0;
 
-		if (len > DISPLAY_LENGTH)
+    while ((len = get_line(line, MAXLINE + 1)) > 0) {
+        int len_exc_newline = line[len - 1] == '\n' ? len - 1 : len;
+        if (len_exc_newline == MAXLINE + 1) {
+            printf("%s", line);
+            int c;
+            while ((c = getchar()) != EOF && c != '\n') {
+                putchar(c);
+            }
+            putchar('\n');
+        }
+    }
 
-			printf("%s", line);
-
-	return 0;
-}
-
-int mygetline (char line[], int limit)
-
-{
-	int	i, c;
-
-	for (i = 0; 
-		i < limit - 1 && (c = getchar()) != '\n';
-		i++)
-
-		line[i] = c;
-
-	if (c == '\n') {
-
-		line[i] = c;
-		i++;
-
-	}
-	line[i] = '\0';
-
-	return i;
+    return 0;
 }

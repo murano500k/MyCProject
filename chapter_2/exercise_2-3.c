@@ -1,39 +1,45 @@
-#include <ctype.h>
+
 #include <stdio.h>
 
-int htoi (char s[])
+void test(char s[]);
+int htoi(char s[]);
 
+int main()
 {
-	int	i, x, c;
-
-	if (s[0] != '\0' && s[0] == '0' && tolower(s[1]) == 'x')
-	
-		i = 2;
-
-	else
-
-		i = 0;
-
-	x = 0;
-	for ( ; ; )
-
-		if (isdigit(c = s[i++]))
-
-			x = x * 16 + c - '0';
-
-		else if ((c = tolower(c)) >= 'a' && c <= 'f')
-
-			x = x * 16 + c - 'a' + 10;
-		else
-
-			return x;
+    test("11");
+    test("a");
+    test("1a");
+    test("0x11");
 }
 
-#define TEST_STRING	"0xCaFE1234"
-			
-int main ()
-
+void test(char s[])
 {
-	printf("%s is 0x%x.\n", TEST_STRING, htoi(TEST_STRING));
-	return 0;
+    printf("%5s = %d\n", s, htoi(s));
+}
+
+int htoi(char s[])
+{
+    int end = 0;
+    for (; s[end] != 0; end++)
+        ;
+    end--;
+
+    int acc = 0;
+    int exponent = 1;
+
+    for (; end >= 0 && !(end == 1 && (s[end] == 'x' || s[end] == 'X')); end--) {
+        int val = 0;
+
+        int l = s[end];
+        if (l >= 48 && l <= 57)
+            val = l - 48;
+        else if (l >= 65 && l <= 90)
+            val = l - 65 + 10;
+        else if (l >= 97 && l <= 102)
+            val = l - 97 + 10;
+
+        acc += exponent * val;
+        exponent *= 16;
+    }
+    return acc;
 }

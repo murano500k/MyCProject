@@ -1,68 +1,62 @@
 #include <stdio.h>
 
-#define MAXLINE	20
+#define MAXLINE  80
 
-int 	mygetline (char line[], int limit);
-void	copy (char to[], char from[]);
+int get_line(char s[], int lim);
+void copy(char from[], char to[]);
 
-int main ()
-
+int main()
 {
-	int	len;
-	int	max;
-	char	line[MAXLINE];
-	char	longest[MAXLINE];
+    int len = 0;
+    int max = 0;
+    char longest[MAXLINE + 1];
+    char line[MAXLINE + 1];
 
-	max = 0;
-	while ((len = mygetline(line, MAXLINE)) > 0)
+    for (int i = 0; i < MAXLINE + 1; i++)
+        line[i] = longest[i] = 0;
 
-		if (len > max) {
+    while ((len = get_line(line, MAXLINE)) > 0) {
+        if (len > max) {
+            copy(line, longest);
+            max = len;
+        }
+    }
 
-			max = len;
-			copy(longest, line);
+    if (max > 0) {
+        if (max <= MAXLINE)
+            longest[max - 1] = 0; // remove newline for printing
+        printf("length of longest line: %d\n", max);
+        printf("%s\n", longest);
+    }
 
-		}
-
-	if (max > 0)
-
-		printf("Longest line is %d characters:\n%s", max, longest);
-
-	return 0;
+    return 0;
 }
 
-int mygetline (char line[], int limit)
-
+int get_line(char s[], int lim)
 {
-	int	i, c;
-
-	for (i = 0; (c = getchar()) != '\n'; i++)
-
-		if (i < limit - 2)
-
-			line[i] = c;
-
-	if (i < limit - 1) {
-
-		line[i] = '\n';
-		line[i + 1] = '\0';
-
-	} else {
-
-		line[limit - 2] = '\n';
-		line[limit - 1] = '\0';
-
-	}
-
-	return i;
+    int c;
+    int i = 0;
+    while((c = getchar()) != EOF) {
+        if (c == '\n') {
+            s[i] = '\n';
+            s[i + 1] = 0;
+            return i + 1;
+        }
+        s[i] = (char) c;
+        i++;
+        if (i == lim) {
+            while ((c = getchar()) != EOF && c != '\n')
+                i++; // consume rest of line THIS WAS THE ONLY CHANGE FROM 1_16a
+            return i;
+        }
+    }
+    s[i + 1] = 0;
+    return i;
 }
 
-void copy (char to[], char from[])
-
+void copy(char from[], char to[])
 {
-	int	i;
-
-	i = 0;
-	while ((to[i] = from[i]) != '\0')
-
-		i++;
+    int i = 0;
+    while ((to[i] = from[i]) != 0)
+        ++i;
 }

@@ -1,61 +1,66 @@
-#include <limits.h>
+/*
+
+Write the function itob(n,s,b) that converts the integer n into a
+base b character representation in the string s.
+
+*/
+
 #include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
+#include <limits.h>
 
-void reverse (char s[])
-
+void reverse(char s[]);
+void reverse(char s[])
 {
-	int	c, i, j;
-
-	for (i = 0, j = strlen(s) - 1; i < j; i++, j--) {
-
-		c = s[i];
-		s[i] = s[j];
-		s[j] = c;
-
-	}
+    int i, j, c;
+    for (i = 0, j = (int) strlen(s)-1; i < j; i++, j--) {
+        c = s[i];
+        s[i] = s[j];
+        s[j] = c;
+    }
 }
 
-void itob (int n, char s[], int b)
-
+char digit(unsigned int v);
+char digit(unsigned int v)
 {
-	int	i, sign;
-
-	if ((sign = n) < 0)
-
-		n = -n;
-
-	/* Letters are used if the chosen base is greater than 10, this works
-	 * up to base 36.  The base must be greater or equal to 2 but this is
-	 * not checked.
-	 */
-
-	i = 0;
-	do {
-
-		s[i] = n % b;
-		s[i] += s[i] < 10 ? '0' : 'a' - 10;
-		i++;
-
-	} while ((n /= b) > 0);
-	if (sign < 0)
-
-		s[i++] = '-';
-
-	s[i] = '\0';
-	reverse(s);
+    if (v < 10)
+        return '0' + (char) v;
+    else
+        return 'A' + (char) (v - 10);
 }
 
-#define BUFFER_SIZE	16
-#define TEST_VALUE	246810
-
-int main ()
-
+void itob(int n, char s[], int b);
+void itob(int n, char s[], int b)
 {
-	char	s[BUFFER_SIZE];
+    int i = 0;
+    int sign = n;
 
-	itob(TEST_VALUE, s, 16);
-	printf("TEST_VALUE = 0x%s (0x%x)\n", s, TEST_VALUE);
+    do
+    {
+        s[i++] = digit(abs(n % b));
+    }
+    while(abs(n /= b) > 0);
 
-	return 0;
+    if (sign < 0)
+        s[i++] = '-';
+
+    s[i] = '\0';
+    reverse(s);
+}
+
+void test_itob(int n, int b);
+void test_itob(int n, int b)
+{
+    char s[] = "                            ";
+    itob(n, s, b);
+    printf("itob(%d, %u) = %s\n", n, b, s);
+}
+
+int main()
+{
+    test_itob(13, 16);
+    test_itob(256, 2);
+    test_itob(65536, 3);
+    test_itob(INT_MAX, 10);
 }

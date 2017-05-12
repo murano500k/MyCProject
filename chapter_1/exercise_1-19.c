@@ -1,74 +1,50 @@
 #include <stdio.h>
 
+#define MAXLINE 80
 
-#define MAXLINE	1000
+void reverse(char in[], char out[]);
+int get_line(char line[], int lim);
 
-int 	mygetline (char line[], int limit);
-void	reverse (char s[]);
-
-int main ()
-
+int main()
 {
-	int	len;
-	char	line[MAXLINE];
-
-	while ((len = mygetline(line, MAXLINE)) > 0) {
-
-		reverse(line);
-		printf("%s", line);
-
-	}
-
-	return 0;
+    char line[MAXLINE + 2];
+    char revline[MAXLINE + 2];
+    int len;
+    while ((len = get_line(line, MAXLINE)) > 0) {
+        reverse(line, revline);
+        printf("%s", revline);
+    }
 }
 
-int mygetline (char line[], int limit)
-
+void reverse(char in[], char out[])
 {
-	int	i, c;
+    int i, j;
 
-	for (i = 0; 
-		i < limit - 1 && (c = getchar()) != EOF && c != '\n'; 
-		i++)
+    for (i = 0; in[i] != 0; i++)
+        ;
 
-		line[i] = c;
-
-	if (c == '\n') {
-
-		line[i] = c;
-		i++;
-
-	}
-	line[i] = '\0';
-
-	return i;
+    for (j = 0; j < i; j++)
+        out[j] = in[i - j - 1];
+    out[j] = 0;
 }
-
-void reverse (char s[])
-
+int get_line(char s[], int lim)
 {
-	int	i, j, c;
-
-	i = 0;
-
-	/* This step can be avoided if the length of the string is given as an 
- 	 * argument.
-	 */
-
-	for (j = 0; s[j] != '\n'; j++)
-
-		;
-
-	if (j > 1)
-	
-		while (i < j) {
-
-			c = s[i];
-			s[i] = s[j];
-			s[j] = c;
-
-			i++;
-			j--;
-
-		}
-} 
+    int c;
+    int i = 0;
+    while((c = getchar()) != EOF) {
+        if (c == '\n') {
+            s[i] = '\n';
+            s[i + 1] = 0;
+            return i + 1;
+        }
+        s[i] = (char) c;
+        i++;
+        if (i == lim) {
+            while ((c = getchar()) != EOF && c != '\n')
+                i++;
+            return i;
+        }
+    }
+    s[i + 1] = 0;
+    return i;
+}
