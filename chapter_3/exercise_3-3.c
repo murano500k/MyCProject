@@ -1,65 +1,78 @@
-#include <ctype.h>
+/*
+
+Write a function expand(s1,s2) that expands shorthand notations like a-z in the
+string s1 into the equivalent complete list abc..xyz in s2. Allow for letters 
+of either case and digits, and be prepared to handle cases like a-b-c and 
+a-z0-9 and -a-z. Arrange that a leading or trailing - is taken literally.
+
+*/
+
 #include <stdio.h>
 
-void expand (char s1[], char s2[])
-
+int lowercase_pair(int c1, int c2);
+int lowercase_pair(int c1, int c2)
 {
-	int	i, j, k;
-
-	for (i = j = 0; s1[i] != '\0'; )
-
-		if (isalnum(s1[i]) && s1[i + 1] == '-' && isalnum(s1[i + 2])) {
-
-			if ((isupper(s1[i]) && isupper(s1[i + 2])
-				|| islower(s1[i]) && islower(s1[i + 2])
-				|| isdigit(s1[i]) && isdigit(s1[i + 2]))
-			&& s1[i] < s1[i + 2]) {
-
-				for (k = s1[i]; k < s1[i + 2]; k++)
-			
-					s2[j++] = k;
-	
-				i += 2;
-
-			} else {
-
-				s2[j++] = s1[i++];
-				s2[j++] = s1[i++];
-
-			}
-
-		} else
-
-			s2[j++] = s1[i++];
-
-	s2[j] = '\0';
+    return (c1 >= 'a' && c1 <= 'z') &&
+           (c2 >= 'a' && c2 <= 'z');
 }
 
-#define BUFFER_SIZE		100
-#define NUMBER_TEST_STRINGS	5
-
-char *TEST_STRINGS[NUMBER_TEST_STRINGS] = {
-
-	"a-b-c",
-	"a-z0-9",
-	"-a-z",
-	"A-Z-",
-	"0-aZ-A-uv-z-c"
-
-};
-
-int main ()
-
+int uppercase_pair(int c1, int c2);
+int uppercase_pair(int c1, int c2)
 {
-	int	i;
-	char	s[BUFFER_SIZE];
-	
-	for (i = 0; i < NUMBER_TEST_STRINGS; i++) {
+    return (c1 >= 'A' && c1 <= 'Z') &&
+           (c2 >= 'A' && c2 <= 'Z');
+}
 
-		expand(TEST_STRINGS[i], s);
-		printf("\"%s\" => \"%s\"\n", TEST_STRINGS[i], s);
+int digit_pair(int c1, int c2);
+int digit_pair(int c1, int c2)
+{
+    return (c1 >= '0' && c1 <= '9') &&
+           (c2 >= '0' && c2 <= '9');
+}
 
-	}
+void expand(char* s1, char* s2);
+void expand(char* s1, char* s2)
+{
+    int i = 0;
+    int j = 0;
 
-	return 0;
+    while (s1[i] != '\0') {
+        int start = s1[i];
+        s2[j++] = s1[i++];
+
+        if (s1[i] == '-') {
+            if (s1[i + 1] != '\0') {
+                int end = s1[i + 1];
+                if (start < end &&
+                    (lowercase_pair(start, end) ||
+                     uppercase_pair(start, end) ||
+                     digit_pair(start, end))) {
+                    for (int c = start + 1; c <= end; c++) {
+                        s2[j] = (char) c;
+                        j++;
+                    }
+                    i += 2;
+                }
+            }
+        }
+    }
+    s2[j] = '\0';
+}
+
+int main()
+{
+    char target[] = "                                                                                                                                                                                                                                                                        ";
+
+    char s1[] = "   a-e    2-9";
+    char s2[] = "-f-l123a-b-c a-e-z x-z0-9";
+
+    char t1[] = "   abcde    23456789";
+    char t2[] = "-fghijkl123ab-c abcde-z xyz0123456789";
+
+    expand(s1, target);
+    printf("\ntest 1:\n%s\n%s\n%s\n", s1, t1, target);
+
+    expand(s2, target);
+    printf("\ntest 2:\n%s\n%s\n%s\n", s2, t2, target);
+
 }

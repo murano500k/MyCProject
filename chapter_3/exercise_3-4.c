@@ -1,66 +1,51 @@
-#include <limits.h>
+/*
+
+In a two's complement number representation, the first version of itoa
+does not handle the largest negative number, i.e. -2**(wordsize-1).
+
+*/
+
 #include <stdio.h>
 #include <string.h>
+#include <limits.h>
+#include <stdlib.h>
 
-void reverse (char s[])
-
+void reverse(char s[]);
+void reverse(char s[])
 {
-	int	c, i, j;
+    int c, i, j;
 
-	for (i = 0, j = strlen(s) - 1; i < j; i++, j--) {
-
-		c = s[i];
-		s[i] = s[j];
-		s[j] = c;
-
-	}
+    for (i = 0, j = (int) strlen(s)-1; i < j; i++, j--) {
+        c = s[i];
+        s[i] = s[j];
+        s[j] = (char) c;
+    }
 }
 
-void itoa (int n, char s[])
-
+void myitoa(int n, char s[]);
+void myitoa(int n, char s[])
 {
-	int	i, sign;
+    int i, sign;
 
-
-
-	i = 0;
-	if ((sign = n) < 0) {
-
-		if (n == INT_MIN) {
-
-			n = -(n + 1);
-			s[i++] = n % 10 + 1 + '0';
-			n /= 10;
-
-		} else
-
-			n = -n;
-
-	}
-	do 
-
-		s[i++] = n % 10 + '0';
-
-	while ((n /= 10) > 0);
-	if (sign < 0)
-
-		s[i++] = '-';
-
-	s[i] = '\0';
-	reverse(s);
+    sign = n;
+    i = 0;
+    do {
+        s[i++] = (char) abs(n % 10) + '0';
+    } while (abs(n /= 10) > 0);
+    if (sign < 0)
+        s[i++] = '-';
+    s[i] = '\0';
+    reverse(s);
 }
 
-#define BUFFER_SIZE	16
-
-int main ()
-
+int main()
 {
-	char	s[BUFFER_SIZE];
+    char s[] = "                                          ";
 
-    itoa(-312, s);
-    printf("TEST = %s (%d)\n", s, -312);
-    itoa(INT_MIN, s);
-    printf("INT_MIN = %s (%d)\n", s, INT_MIN);
+    printf("\nfixed itoa:\n");
+    myitoa(INT_MIN + 1, s);
+    printf("%d: %s\n", INT_MIN + 1, s);
+    myitoa(INT_MIN, s);
+    printf("%d: %s\n", INT_MIN, s);
 
-	return 0;
 }

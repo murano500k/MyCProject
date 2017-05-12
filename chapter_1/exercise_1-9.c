@@ -1,24 +1,16 @@
-#include <stdio.h>
+#include   <stdio.h>
 
-
-main ()
-
+int main()
 {
-	int	c; 
+    int c;
 
-	while ((c = getchar()) != EOF) {
-
-		if (c == ' ') {
-
-			putchar(' ');
-			while ((c = getchar()) != EOF && c == ' ')
-
-				;
-	
-		}
-		if (c != EOF)
-
-			putchar(c);
-
-	}
+    int prevspace = 0;
+    while ((c = getchar()) != EOF) {
+        if (c != ' ' || !prevspace) {
+            putchar(c);
+            prevspace = 0;
+        }
+        if (c == ' ')
+            prevspace = 1;
+    }
 }

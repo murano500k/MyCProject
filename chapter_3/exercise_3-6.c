@@ -1,73 +1,55 @@
-#include <limits.h>
+/*
+
+Write a version of itoa that pads the result with zeroes to the left
+
+*/
+
 #include <stdio.h>
+#include <stdlib.h>
 #include <string.h>
 
-void reverse (char s[])
-
+void reverse(char s[]);
+void reverse(char s[])
 {
-	int	c, i, j;
-
-	for (i = 0, j = strlen(s) - 1; i < j; i++, j--) {
-
-		c = s[i];
-		s[i] = s[j];
-		s[j] = c;
-
-	}
+    int i, j, c;
+    for(i = 0, j = (int) strlen(s)-1; i < j; i++, j--) {
+        c = s[i];
+        s[i] = s[j];
+        s[j] = (char) c;
+    }
 }
 
-void itoa (int n, char s[], int w)
-
+void itoa(int n, char s[], int width);
+void itoa(int n, char s[], int width)
 {
-	int	i, sign;
+    int sign = n;
+    int i = 0;
+    do {
+        s[i++] = (char) abs(n % 10) + '0';
+    } while (abs(n /= 10) > 0);
 
-	i = 0;
-	if ((sign = n) < 0) {
+    int j;
+    int extra = width - i;
+    for (j = 0; j < extra; j++)
+        s[i++] = '0';
 
-		if (n == INT_MIN) {
+    if (sign < 0)
+        s[i++] = '-';
+    s[i] = '\0';
 
-			n = -(n + 1);
-			s[i++] = n % 10 + 1 + '0';
-			n /= 10;
-
-		} else
-
-			n = -n;
-
-	}
-	do
-
-		s[i++] = n % 10 + '0';
-
-	while ((n /= 10) > 0);
-	if (sign < 0)
-
-		s[i++] = '-';
-
-	w -= i;
-	while (w-- > 0)
-
-		s[i++] = ' ';
-
-	s[i] = '\0';
-	reverse(s);
+    reverse(s);
 }
 
-#define BUFFER_SIZE	16
-
-int main ()
-
+void test_itoa(int n, int width);
+void test_itoa(int n, int width)
 {
-	char	s[BUFFER_SIZE];
+    char s[] = "                         ";
+    itoa(n, s, width);
+    printf("itoa(%d, %d) = %s\n", n, width, s);
+}
 
-	itoa(INT_MIN, s, BUFFER_SIZE - 1);
-	printf("%s\n", s);
-
-	itoa(123, s, BUFFER_SIZE - 1);
-	printf("%s\n", s);
-
-	itoa(123456, s, BUFFER_SIZE - 1);
-	printf("%s\n", s);
-
-	return 0;
+int main()
+{
+    test_itoa(13, 5);
+    test_itoa(134, 10);
 }

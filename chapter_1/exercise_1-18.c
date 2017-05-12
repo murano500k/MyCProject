@@ -1,58 +1,38 @@
 #include <stdio.h>
+#define MAX_SPACE_RUN  80
 
-
-#define MAXLINE	1000
-
-int 	mygetline (char line[], int limit);
-
-int main ()
-
+int main()
 {
-	int	len;
-	char	line[MAXLINE];
+    char whitespace[MAX_SPACE_RUN + 1];
+    int ix = 0;
+    int blank_line = 1;
 
-	while ((len = mygetline(line, MAXLINE)) > 0) {
-
-		len = len - 2;
-		if (len >= 0 && line[len] == '\n')
-
-			len--;
-
-		while (len >= 0 && (line[len] == ' ' || line[len] == '\t'))
-
-			len--;
-
-		if (len >= 0) {
-
-			line[len + 1] = '\n';
-			line[len + 2] = '\0';
-			printf("%s", line);
-
-		}
-
-	}
-
-	return 0;
-}
-
-int mygetline (char line[], int limit)
-
-{
-	int	i, c;
-
-	for (i = 0; 
-		i < limit - 1 && (c = getchar()) != EOF && c != '\n'; 
-		i++)
-
-		line[i] = c;
-
-	if (c == '\n') {
-
-		line[i] = c;
-		i++;
-
-	}
-	line[i] = '\0';
-
-	return i;
+    int c;
+    while ((c = getchar()) != EOF) {
+        if (c == ' ' || c == '\t') {
+            if (ix == MAX_SPACE_RUN - 2) {
+                printf("%s", whitespace);
+                for (int i = 0; i < MAX_SPACE_RUN + 1; i++)
+                    whitespace[i] = 0;
+                ix = 0;
+            }
+            whitespace[ix++] = (char) c;
+        } else if (c == '\n') {
+            for (int i = 0; i < MAX_SPACE_RUN + 1; i++)
+                whitespace[i] = 0;
+            ix = 0;
+            if (!blank_line) {
+                putchar(c);
+            }
+            blank_line = 1;
+        } else {
+            blank_line = 0;
+            printf("%s", whitespace);
+            for (int i = 0; i < MAX_SPACE_RUN + 1; i++)
+                whitespace[i] = 0;
+            ix = 0;
+            putchar(c);
+        }
+    }
+    printf("\n");
 }

@@ -1,30 +1,25 @@
 #include <stdio.h>
 
-int any (char s1[], char s2[])
+int any(char*, char*);
+void test(char*, char*);
 
+void test(char* a, char* b)
 {
-	int	i, j;
-
-	for (i = 0; s1[i] != '\0'; i++)
-
-		for (j = 0; s2[j] != '\0'; j++)
-
-			if (s1[i] == s2[j])
-
-				return i;
-
-	return -1;
+    printf("any(\"%s\", \"%s\") = %d\n", a, b, any(a, b));
 }
 
-int main ()
-
+int any(char* a, char* b)
 {
-	char	s1[] = "abcdef", 
-		s2[] = "xyz",
-		s3[] = "opqrsbcd";
+    for (int i = 0; a[i] != '\0'; i++)
+        for (int j = 0; b[j] != '\0'; j++)
+            if (b[j] == a[i])
+                return i;
+    return -1;
+}
 
-	printf("any(\"%s\", \"%s\") = %d\n", s1, s2, any(s1, s2));
-	printf("any(\"%s\", \"%s\") = %d\n", s1, s3, any(s1, s3));
-
-	return 0;
+int main()
+{
+    test("abc", "ba");
+    test("abc", "iupuwerwerb");
+    test("abc", "d");
 }

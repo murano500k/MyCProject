@@ -1,76 +1,62 @@
 #include <stdio.h>
+#define MAX_LEN 12
 
-#define MAXIMUM_LENGTH	9
-
-main ()
-
+int main()
 {
-	int	i, counts[MAXIMUM_LENGTH], 
-		is_in_word, 
-		length, max, 
-		c;
+    int lens[MAX_LEN];
+    for (int i = 0; i < MAX_LEN; i++)
+        lens[i] = 0;
 
-	/* Count words. */
+    int inword = 0;
+    int len = 0;
+    int c;
+    while ((c = getchar()) != EOF) {
+        if (c == ' ' || c == '\t' || c == '\n') {
+            if (inword) {
+                if (len > MAX_LEN)
+                    len = MAX_LEN;
+                lens[len - 1]++;
+            }
+            inword = 0;
+            len = 0;
+        } else {
+            inword = 1;
+            len++;
+        }
+    }
 
-	for (i = 0; i < MAXIMUM_LENGTH; i++)
+    printf("\n");
+    for (int i = 0; i < MAX_LEN; i++) {
+        printf("%3d ", i + 1);
+        for (int j = 0; j < lens[i]; j++)
+            printf("#");
+        printf("\n");
+    }
 
-		counts[i] = 0;
+    printf("\n");
+    int highest = 0;
+    for (int i = 0; i < MAX_LEN; i++)
+        if (lens[i] > highest)
+            highest = lens[i];
 
-	is_in_word = length = max = 0;
-	while ((c = getchar()) != '\n')
+    int divisor = 1;
+    while (highest >= 30) {
+        highest /= 2;
+        divisor *= 2;
+    }
 
-		if (c >= 'a' && c <= 'z' || c >= 'A' && c <= 'Z') {
+    for (int row = highest; row >= 0; row--) {
+        printf(" ");
+        for (int j = 0; j < MAX_LEN; j++)
+            if ((lens[j] / divisor) >= row)
+                printf("###");
+            else
+                printf("   ");
 
-			is_in_word = 1;
-			length++;
+        printf("\n");
+    }
 
-		} else {
-
-			if (is_in_word && length <= MAXIMUM_LENGTH)
-
-				if (++counts[length - 1] > max)
-
-					max = counts[length - 1];
-
-			is_in_word = length = 0;
-
-		}
-
-	/* Print horizontal histogram. */
-	
-	for (i = 0; i < MAXIMUM_LENGTH; i++) {
-
-		printf("%2d: ", i + 1);
-		c = counts[i];
-		while (c-- != 0)
-
-			putchar('=');
-
-		putchar('\n');
-
-	}
-
-	/* Print vertical histogram. */
-
-	while (max > 0) {
-
-		for (i = 0; i < MAXIMUM_LENGTH; i++)
-
-			if (counts[i] >= max)
-
-				printf(" | ");
-
-			else
-
-				printf("   ");
-
-		putchar('\n');
-		max--;
-
-	}
-	for (i = 0; i < MAXIMUM_LENGTH; i++)
-	
-		printf("%2d ", i + 1);
-
-	putchar('\n');
+    for (int i = 0; i < MAX_LEN; i++)
+        printf("%3d", i + 1);
+    printf("\n");
 }

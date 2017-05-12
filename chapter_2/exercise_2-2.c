@@ -1,68 +1,24 @@
+/* Write a loop equivalent to this that doens't use && or || */
+
 #include <stdio.h>
 
-
-
-#define MAXLINE	1000
-
-int 	mygetline (char line[], int maxline);
-void	copy (char to[], char from[]);
-
-int main ()
-
+int main()
 {
-	int	len;
-	int	max;
-	char	line[MAXLINE];
-	char	longest[MAXLINE];
+    int lim = 5;
+    int c;
 
-	max = 0;
-	while ((len = mygetline(line, MAXLINE)) > 0)
+    printf("BEFORE:\n");
+    for (int i = 0; i < lim - 1 && (c = getchar()) != '\n' && c != EOF; ++i)
+        putchar(c);
 
-		if (len > max) {
-
-			max = len;
-			copy(longest, line);
-
-		}
-	
-	if (max > 0)
-
-		printf("%s", longest);
-
-	return 0;
-}
-
-int mygetline (char s[], int lim)
-
-{
-	int	c, i;
-
-
-
-	for (i = 0; 
-		(i < lim - 1) + ((c = getchar()) != EOF) + (c != '\n') == 3; 
-		i++)
-
-		s[i] = c;
-
-	if (c == '\n') {
-
-		s[i] = c;
-		i++;
-
-	}
-	s[i] = '\0';
-
-	return i;
-}
-
-void copy (char to[], char from[])
-
-{
-	int	i;
-
-	i = 0;
-	while ((to[i] = from[i]) != '\0')
-
-		i++;
+    printf("\n\n\nAFTER:\n");
+    int i = 0;
+    while (1) {
+        if (i == lim - 1) break;
+        c = getchar();
+        if (c == '\n') break;
+        if (c == EOF) break;
+        putchar(c);
+        ++i;
+    }
 }

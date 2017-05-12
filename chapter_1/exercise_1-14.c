@@ -1,43 +1,23 @@
 #include <stdio.h>
 
-#define ALPHABET_SIZE	26
-#define HISTOGRAM_SIZE	40
-
-main ()
-
+int main()
 {
-	int	i, counts[ALPHABET_SIZE], max, c;
+    int letters[26];
+    for (int i = 0; i < 26; i++)
+        letters[i] = 0;
 
-	for (i = 0; i < ALPHABET_SIZE; i++)
+    int c;
+    while ((c = getchar()) != EOF) {
+        if (c >= 65 && c <= 90)
+            letters[c - 65]++;
+        if (c >= 97 && c <= 122)
+            letters[c - 32 - 65]++;
+    }
 
-		counts[i] = 0;
-
-
-	max = 1;
-	while ((c = getchar()) != '\n') {
-
-		if (c >= 'a' && c <= 'z')
-
-			c = 'A' + c - 'a';
-
-		if (c >= 'A' && c <= 'Z')
-
-			if (++counts[c - 'A'] > max)
-
-				max = counts[c - 'A'];
-
-	}
-	
-	for (i = 0; i < ALPHABET_SIZE; i++) {
-
-		printf("%c: ", (char) 'A' + i);
-
-		c = HISTOGRAM_SIZE * counts[i] / max;	
-		while (c-- > 0)
-
-			putchar('=');
-
-		putchar('\n');
-
-	}
+    for (int i = 0; i < 26; i++) {
+        printf(" %c: ", i + 65);
+        for (int j = 0; j < letters[i]; j++)
+            printf(".");
+        printf("\n");
+    }
 }

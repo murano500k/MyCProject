@@ -1,64 +1,42 @@
 #include <stdio.h>
 
-void 	entab (int n);
+#define MAX_LINE 80
 
-int main () 
-
+int main()
 {
-	entab(8);
-	return 0;
-}
+    char buffer[MAX_LINE + 2];
+    int i = 0;
+    int column = 0;
 
-void entab (int n)
+    int c;
+    while ((c = getchar()) != EOF) {
+        if (column == MAX_LINE && c != '\n') {
+            if (i < MAX_LINE)
+                putchar('\n');
+            for (int j = 0; j < i; j++)
+                putchar(buffer[j]);
+            if (i == MAX_LINE)
+                putchar('\n');
+            column = i;
+            if (column == MAX_LINE)
+                column = 0;
+            i = 0;
+        }
 
-{
-	int	column, blanks, c;
-	
-	column = blanks = 0;
-	while ((c = getchar()) != EOF) {
+        if (c == ' ' || c == '\n') {
+            for (int j = 0; j < i; j++)
+                putchar(buffer[j]);
+            i = 0;
+            putchar(c);
+        } else {
+            buffer[i++] = (char) c;
+        }
 
-		if (c == ' ')
-		
-			blanks++;
-			
-		else if (c == '\t')
-	
-			blanks = blanks + n - (column + blanks) % n;
-
-		else {
-
-			while (blanks) {
-
-				int	t;
-
-				t = n - column % n;
-  
-				if (t <= blanks && t != 1) {
-
-					column = column + t;
-					putchar('\t');
-					blanks = blanks - t;
-				
-				} else
-						
-					do {
-					
-						column++;
-						putchar(' ');
-						
-					} while (--blanks);
-			
-			}
-			putchar(c);
-			if (c == '\n')
-			
-				column = 0;
-			
-			else
-			
-				column++;
-		
-		}
-	
-	}
+        if (c == '\n')
+            column = 0;
+        else
+            column++;
+    }
+    for (int j = 0; j < i; j++)
+        putchar(buffer[j]);
 }

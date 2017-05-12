@@ -1,33 +1,41 @@
 #include <stdio.h>
 
-void squeeze (char s1[], char s2[])
+void squeeze(char*, char*);
+void test(char*, char*);
 
+void squeeze(char* result, char* exclude)
 {
-	int	i, j, k;
+    int i, j;
 
-	for (i = j = 0; s1[i] != '\0'; i++) {
-
-		for (k = 0; s2[k] != '\0' && s1[i] != s2[k]; k++)
-
-			;
-
-		if (s2[k] == '\0')
-
-			s1[j++] = s1[i];
-
-	}
-	s1[j] = '\0';
+    for(i = j = 0; result[i] != '\0'; i++) {
+        int copy = 1;
+        for (int n = 0; exclude[n] != '\0'; n++)
+            if (result[i] == exclude[n])
+                copy = 0;
+        if (copy)
+            result[j++] = result[i];
+    }
+    result[j] = '\0';
 }
 
-int main ()
-
+void test(char* result, char* exclude)
 {
-	char	s1[] = "abcdef", 
-		s2[] = "bdf";
+    printf("squeeze(\"%s\", \"%s\"): ", result, exclude);
+    squeeze(result, exclude);
+    printf("%s\n", result);
+}
 
-	printf("squeeze(\"%s\", \"%s\") ", s1, s2);
-	squeeze(s1, s2);
-	printf("=> \"%s\"\n", s1);
+int main()
+{
+    char test1[] = "abc";
+    test(test1, "b");
 
-	return 0;
+    char test2[] = "abcde";
+    test(test2, "bd");
+
+    char test3[] = "abc";
+    test(test3, "");
+
+    char test4[] = "";
+    test(test4, "456");
 }

@@ -1,79 +1,55 @@
+/* Removes comments from a C program (both styles) */
+
 #include <stdio.h>
 
-#define NOTHING         0
-#define COMMENT         1
-#define DOUBLE_QUOTE    2
-#define SINGLE_QUOTE    3
-                        
-int main ()
-
+int main()
 {
-        int     state, c, d;
+    int in_c_comment = 0;
+    int in_cpp_comment = 0;
+    int in_string = 0;
+    int in_character_literal = /* eg */0;
+    int c;
+    int prevc = 0;
+    while ((c = getchar()) != EOF) {
+        if (!in_c_comment && !in_cpp_comment &&
+            !in_string && !in_character_literal) {
+            if (prevc == '/' && c == '*')
+                in_c_comment = 1;
+            if (c == '/' && prevc == '/')
+                in_cpp_comment = 1;
+        }
 
-        state = NOTHING;
-	while ((c = getchar()) != EOF)
+        if (c == '"') {
+            if (in_string) {
+                if (prevc != '\\')
+                    in_string = 0;
+            } else if (!in_c_comment && !in_cpp_comment && !in_character_literal) {
+                in_string = 1;
+            }
+        }
 
-                if (state == NOTHING) {
 
-                        if (c == '/') {
+        if (c == '\'') {
+            if (in_character_literal) {
+                if (prevc != '\\')
+                    in_character_literal = 0;
+            } else if (!in_c_comment && !in_cpp_comment && !in_string) {
+                in_character_literal = 1;
+            }
+        }
 
-				do {
+        if (!in_c_comment && !in_cpp_comment && prevc)
+            putchar(prevc);
 
-                        		if ((d = getchar()) == '*')
+        if (in_c_comment)
+            if (prevc == '*' && c == '/') {
+                in_c_comment = 0;
+                c = 0;
+            }
+        if (in_cpp_comment)
+            if (c == '\n')
+                in_cpp_comment = 0;
 
-                                                state = COMMENT;
-
-                                        else
-
-                                                putchar(c);
-
- 					c = d;
-
-				} while (c == '/');
-
-				if (state != COMMENT && c != EOF)
-				
-					putchar(c);
-
-                        } else {
-
-                                if (c == '\"')
-
-                                        state = DOUBLE_QUOTE;
-
-                                else if (c == '\'')
-
-                                        state = SINGLE_QUOTE;
-
-                                putchar(c);
-
-                        }
-
-                } else if (state == COMMENT) {
-
-                        while (c == '*')
-
-                                if ((c = getchar()) == '/')
-
-                                        state = NOTHING;
-
-                } else {
-
-                        if (c == '\\') {
-
-                                putchar(c);
-                                c = getchar();
-
-                        } else if (state == DOUBLE_QUOTE && c == '\"'
-                        || state == SINGLE_QUOTE && c == '\'')
-
-                                state = NOTHING;
-
-                        if (c != EOF)
-
-                                putchar(c);
-
-                }
-
-        return 0;
+        prevc = c;
+    }
 }

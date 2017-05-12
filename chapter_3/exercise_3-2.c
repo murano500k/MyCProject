@@ -1,84 +1,87 @@
+/*
+
+Write a function escape(s, t) that copies s to t and converts \n to "\\n" etc
+Also write unescape that does the opposite.
+
+*/
+
 #include <stdio.h>
 
-void escape (char s[], char t[])
-
+void escape(char* s, char* t);
+void escape(char* s, char* t)
 {
-	int	i, j;
-
-	for (i = j = 0; s[i] != '\0'; i++, j++)
-
-		switch (s[i]) {
-
-			case '\n':	
-
-				t[j++] = '\\'; 
-				t[j] = 'n'; 
-				break;
-
-			case '\t':	
-
-				t[j++] = '\\'; 
-				t[j] = 't'; 
-				break;
-
-			default:	
-
-				t[j] = s[i]; 
-				break;
-
-		}
-
-	t[j] = '\0';
+    int i = 0;
+    int j = 0;
+    while (s[i] != '\0') {
+        switch (s[i]) {
+            case '\n':
+                t[j] = '\\';
+                j++;
+                t[j] = 'n';
+                break;
+            case '\t':
+                t[j] = '\\';
+                j++;
+                t[j] = 't';
+                break;
+            default:
+                t[j] = s[i];
+                break;
+        }
+        i++;
+        j++;
+    }
+    t[j] = '\0';
 }
 
-void unescape (char s[], char t[])
-
+void unescape(char* s, char* t);
+void unescape(char* s, char* t)
 {
-	int	i, j;
-
-	for (i = j = 0; s[i] != '\0'; i++, j++)
-
-		if (s[i] == '\\')
-
-			switch (s[++i]) {
-
-				case 't':	
-
-					t[j] = '\t'; 
-					break;
-
-				case 'n':	
-
-					t[j] = '\n'; 
-					break;
-
-				default: 
-
-					t[j++] = '\\'; 
-					t[j] = s[i];
-					break;
-
-			}
-
-		else
-
-			t[j] = s[i];
-
-	t[j] = '\0';
+    int i = 0;
+    int j = 0;
+    while (s[i] != '\0') {
+        switch (s[i]) {
+            case '\\':
+                switch(s[i + 1]) {
+                    case 'n':
+                        t[j] = '\n';
+                        i += 2;
+                        j++;
+                        break;
+                    case 't':
+                        t[j] = '\t';
+                        i += 2;
+                        j++;
+                        break;
+                    default:
+                        t[j] = '\\';
+                        t[j + 1] = s[i + 1];
+                        i += 2;
+                        j += 2;
+                        break;
+                }
+                break;
+            default:
+                t[j] = s[i];
+                i++;
+                j++;
+                break;
+        }
+    }
+    t[j] = '\0';
 }
 
-#define BUFFER_SIZE	100
-
-int main ()
-
+int main()
 {
-	char	p[BUFFER_SIZE], q[BUFFER_SIZE];
-	
-	escape("A newline\nthen a tab\t", p);
-	printf("escaped: \"%s\".\n", p);
+    char s[] = "foo\n\tbar\n";
+    printf("\"%s\"\n", s);
+    char t[] = "                                                       ";
+    escape(s, t);
+    printf("\"%s\"\n\n", t);
 
-	unescape(p, q);
-	printf("un-escaped: \"%s\".\n", q);
-
-	return 0;
+    char s1[] = "foo\\n\\tbar\\n\\";
+    printf("unescape:\"%s\"\n", s1);
+    char t1[] = "                                                       ";
+    unescape(s1, t1);
+    printf("\"%s\"\n", t1);
 }
