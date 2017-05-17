@@ -24,7 +24,7 @@ int main()
 
     if (max > 0) {
         if (max <= MAXLINE)
-            longest[max - 1] = 0; // remove newline for printing
+            longest[max - 1] = 0;
         printf("length of longest line: %d\n", max);
         printf("%s\n", longest);
     }
@@ -46,7 +46,7 @@ int get_line(char s[], int lim)
         i++;
         if (i == lim) {
             while ((c = getchar()) != EOF && c != '\n')
-                i++; // consume rest of line THIS WAS THE ONLY CHANGE FROM 1_16a
+                i++;
             return i;
         }
     }

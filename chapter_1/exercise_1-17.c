@@ -3,7 +3,6 @@
 #define MAXLINE  80
 
 int get_line(char s[], int lim);
-int get_line_old(char s[], int lim);
 void copy(char from[], char to[]);
 
 int main()
